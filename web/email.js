@@ -1,5 +1,7 @@
 // Email.js version 5
 // code credits http://www.bronze-age.com/nospam/encode.html
+//
+
 
 var tld_ = new Array()
 tld_[0] = "com";
