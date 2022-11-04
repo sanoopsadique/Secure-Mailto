@@ -1,0 +1,6 @@
+maillinker:
+  image: sanoopsadique/securemail-linker
+  
+  ports:
+    - "5000:80"
+  tty: true
