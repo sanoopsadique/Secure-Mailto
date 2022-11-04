@@ -51,3 +51,5 @@ function swapper(d)
 			s+= d.charAt(i+1)+d.charAt(i);
 	return s.replace(/\?/g,'.');
 }
+
+//Thank you
