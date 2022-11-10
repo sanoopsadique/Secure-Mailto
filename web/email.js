@@ -61,7 +61,7 @@ function get_subject(){
 
     var qs = request.split('&');
     //for(var i = 0, result = {}; i < 0; i++){
-    qs[0] = qs[0].split('=');
+    	qs[0] = qs[0].split('=');
         //result[qs[i][0]] = qs[i][1];
 	
 	if(qs[0][1] == '')
