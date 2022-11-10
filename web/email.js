@@ -22,7 +22,8 @@ function mail(name, dom, tl, params)
 {
 	var s = e(name,dom,tl);
 	//document.write('<a href="'+m_+s+params+'">'+s+'</a>');
-    window.location = m_+s+params
+	subject = "?subject="+get_subject()
+    window.location = m_+s+params+subject
 }
 function mail2(name, dom, tl, params, display)
 {
@@ -52,4 +53,19 @@ function swapper(d)
 	return s.replace(/\?/g,'.');
 }
 
-//Thank you
+function get_subject(){
+    var url = location.href;
+	var request = url.substring(url.indexOf('?') + 1);
+    if(request == url)
+		return "Let's Connect"
+
+    var qs = request.split('&');
+    //for(var i = 0, result = {}; i < 0; i++){
+    qs[0] = qs[0].split('=');
+        //result[qs[i][0]] = qs[i][1];
+	
+	if(qs[0][1] == '')
+		qs[0][1] = "Let's Connect"
+
+    return qs[0][1];
+}
