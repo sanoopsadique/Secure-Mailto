@@ -66,6 +66,10 @@ function get_subject(){
 	
 	if(qs[0][1] == '')
 		qs[0][1] = "Let's Connect"
+	for(var i = 0; i < qs[0].length; i++){
+		if(qs[0][i]=='+')
+			qs[0][i]==' '
+	}
 
     return qs[0][1];
 }
