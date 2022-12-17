@@ -2,7 +2,12 @@
 #checking RSAT AD status & installing if not present
 $adm = Get-WindowsCapability -Name Rsat.ActiveDirectory.DS-LDS.Tools~~~~0.0.1.0 -Online
 if($adm.state -eq 'NotPresent') {
+    Write-Output 'Required modules are not installed on the machine. Starting installation'
     Add-WindowsCapability -Name Rsat.ActiveDirectory.DS-LDS.Tools~~~~0.0.1.0 -Online
+    Write-Output 'Installed required modules. Starting script'
+}
+else{
+    Write-Output 'Required modules are present in the system. Starting script'
 }
 
 
