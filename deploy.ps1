@@ -9,7 +9,9 @@ if($adm.state -eq 'NotPresent') {
 else{
     Write-Output 'Required modules are present in the system. Starting script'
 }
-$Credential = Get-Credential acdm\saitmgr 
+$mgrid= Read-Host -Prompt "Enter your saitmgr id"
+$mgrid='acdm\saitmgr'+$mgrid
+$Credential = Get-Credential $mgrid  
 
 #Start
 import-module ActiveDirectory
