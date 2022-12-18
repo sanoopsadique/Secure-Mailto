@@ -9,7 +9,7 @@ if($adm.state -eq 'NotPresent') {
 else{
     Write-Output 'Required modules are present in the system. Starting script'
 }
-
+$Credential = Get-Credential acdm\saitmgr 
 
 #Start
 import-module ActiveDirectory
@@ -125,36 +125,45 @@ while (($choice -eq 'e') -or ($choice -eq 'E')) {
 $asset= Read-Host -Prompt "Enter the asset tag#"
 
 #Input localadmin account
-$admin= Read-Host -Prompt "Enter the email of local admin account"
-
+$admin = ''
+while ($admin -eq '') {
+    $admin= Read-Host -Prompt "Enter the email of local admin account"
+    $user = Get-AdUser -Filter {emailaddress -eq $admin} -Credential $Credential
+        if(!$user) { 
+            Write-Output 'Error: User not found in active directory'
+            $admin = ''
+        }
+    }
+    
 #Input department name
-$dept= Read-Host -Prompt "Enter the department name"
+$ou = ''
+while ($ou -eq '') {
+    $dept= Read-Host -Prompt "Enter the department name"
+    $ou = $departments[$dept]
+    if ($ou -eq ''){
+        Write-Output 'Error: Invalid department'
+    }
+}
 
 $current_name = $env:computername
 $new_name = $dept+$asset
-$ou = $departments[$dept]
 $ou_path = 'OU='+$ou+',OU=Staff,OU=PCs,DC=ACDM,DC=DS,DC=SAIT,DC=CA'
 
 #Confirm
 Write-Output '________________________________________________________'`r`n'Computer will be renamed from '$current_name' to '$new_name`r`n$admin' will be added as local administrator'`r`n'Device will be added to OU# '$ou
 Write-Output '________________________________________________________'
-$choice= Read-Host -Prompt 'Do you want to continue? (y -> Yes | n -> No | e -> Edit Values)[y]'
 
+while (($choice -eq 'e') -or ($choice -eq 'E') -or ($choice -eq 'n') -or ($choice -eq 'N') -or ($choice -eq 'y') -or ($choice -eq 'Y') -or ($choice -eq '')){
+    $choice= Read-Host -Prompt 'Do you want to continue? (y -> Yes | n -> No | e -> Edit Values)[y]'
+    }
 }
 if(($choice -eq 'y') -or ($choice -eq 'Y') -or ($choice -eq '')) {
     
     # Adding computer to OU
-    $Credential = Get-Credential acdm\saitmgr 
     Get-ADComputer $current_name -Credential $Credential | Move-ADObject -TargetPath $ou_path -Verbose -Credential $Credential
 
     # Adding user to the local admin group
-    $user = Get-AdUser -Filter {emailaddress -eq $admin} -Credential $Credential
-    if(!$user) { 
-        Write-Output 'Error: User not found in active directory'
-    }
-    else {
-        Add-LocalGroupMember -Group "Administrators" -Member $user.SamAccountName -Verbose
-    }
+    Add-LocalGroupMember -Group "Administrators" -Member $user.SamAccountName -Verbose
     
     #Renaming computer
     Rename-Computer $new_name -Force -Verbose -DomainCredential $Credential
